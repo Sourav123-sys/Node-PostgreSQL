@@ -8,3 +8,9 @@ CREATE TABLE book (
 
 INSERT INTO book(id,name,description)
 VALUES (1,nun2,horror movie);
+
+SELECT * FROM book
+
+SELECT * FROM book WHERE id = 1
+DELETE  FROM book WHERE id = 1
+UPDATE  book SET name ="w" description =" y" WHERE id = 1

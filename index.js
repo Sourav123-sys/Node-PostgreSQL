@@ -19,7 +19,8 @@ app.use(bodyParser.json())
 //get book
 app.get('/books', async (req, res) => {
     try {
-        res.status(200).json({ message: "books are returned " })
+        const books = await pool.query("SELECT * FROM book")
+        res.status(200).json({ message: "books are returned ",data : books.rows })
     } catch (error) {
         res.json({ error: error.message })
     }
@@ -29,7 +30,8 @@ app.get('/books', async (req, res) => {
 app.get('/books/:id', async (req, res) => {
     try {
         const { id } = req.params
-        res.status(200).json({ message: `Specefic book is returned with id :${id}` })
+        const book = await pool.query("SELECT * FROM book WHERE id =$1",[id])
+        res.status(200).json({ message: `Specefic book is returned.`, data : book.rows })
     } catch (error) {
         res.json({ error: error.message })
     }
@@ -61,7 +63,14 @@ app.post('/books', async (req, res) => {
 app.delete('/books/:id', async (req, res) => {
     try {
         const { id } = req.params
-        res.status(200).json({ message: `Specefic book is deleted with id :${id}` })
+        await pool.query("DELETE FROM book WHERE id =$1 ",
+        [id]
+    )
+
+    res.status(201).json({
+        message: `Delete successfully.`,
+       
+    })
     } catch (error) {
         res.json({ error: error.message })
     }
@@ -72,7 +81,10 @@ app.put('/books/:id', async (req, res) => {
     try {
         const { id } = req.params
         const { name, description } = req.body
-        res.status(201).json({ message: `book  was updated.And new name :${name} , description : ${description}` })
+ const updateBook =  await pool.query("UPDATE  book SET name=$1, description=$2  WHERE id =$3  RETURNING *",
+ [name,description,id]
+ )
+        res.status(201).json({ message: `book  was updated.`,data : updateBook.rows })
     } catch (error) {
         res.json({ error: error.message })
     }
