@@ -5,7 +5,7 @@ CREATE TABLE book (
     name VARCHAR(255),
     description VARCHAR(255)
 );
-
+-- command
 INSERT INTO book(id,name,description)
 VALUES (1,nun2,horror movie);
 
