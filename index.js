@@ -43,7 +43,7 @@ app.post('/books', async (req, res) => {
         const { name, description } = req.body
         const id = uuidv4()
 
-        //insert data
+       
 
         const newBook = await pool.query("INSERT INTO book (id,name,description) VALUES ($1,$2,$3) RETURNING * ",
             [id, name, description]
