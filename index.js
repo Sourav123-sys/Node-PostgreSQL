@@ -6,71 +6,66 @@ const fs = require('fs');
 const port = 5000
 const app = express()
 
-const fortunes = require("./data/fortunes.json")
-
-
-
 app.use(cors());
-
 
 app.use(bodyParser.json())
 
 
-const writeFortunes = json => {
-    fs.writeFile('./data/fortunes.json', JSON.stringify(json), err => console.log(err))
-}
-
-
-app.get('/fortunes', (req, res) => {
-    res.json(fortunes);
-})
-
-app.get('/fortunes/random', (req, res) => {
-
-    const randomFortunes = Math.floor(Math.random() * fortunes.length)
-    const randomFortune = fortunes[randomFortunes]
-    res.json(randomFortune)
-})
-app.get('/fortunes/:id', (req, res) => {
-
-    res.json(fortunes.find(f => f.id == req.params.id))
-})
-app.post('/fortunes', (req, res) => {
-
-    const { message, spiritAnimal, luckyNumber } = req.body
-    const fortuneId = fortunes.map(f => f.id)
-    const newFortune = {
-        id: (fortuneId.length > 0 ? Math.max(...fortuneId) : 0) + 1
-        , message,
-        spiritAnimal,
-        luckyNumber
+//get book
+app.get('/books', async (req, res) => {
+    try {
+        res.status(200).json({message:"books are returned "})
+    }catch(error){
+        res.json({error:error.message})
     }
-    const newFortuneData = fortunes.concat(newFortune)
-    writeFortunes(newFortuneData)
-
-
-
-    res.json(newFortuneData)
 })
-app.put('/fortunes/:id', (req, res) => {
-    const { id } = req.params
-    const { message, spiritAnimal, luckyNumber } = req.body
-    const oldFortune = fortunes.find(f => f.id == id)
-    if (message) oldFortune.message = message;
-    if (luckyNumber) oldFortune.spiritAnimal = spiritAnimal;
-    if (spiritAnimal) oldFortune.luckyNumber = luckyNumber;
+
+//get book by id
+app.get('/books/:id', async (req, res) => {
+    try {
+        const {id} = req.params
+        res.status(200).json({message:`Specefic book is returned with id :${id}`})
+    }catch(error){
+        res.json({error:error.message})
+    }
+})
+
+//post book
+app.post('/books', async (req, res) => {
+    try {
+        const {name,description} = req.body
+        res.status(201 ).json({message:`${name}  was created.And description : ${description}`})
+    }catch(error){
+        res.json({error:error.message})
+    }
+})
+
+ 
+//delete book 
+app.delete('/books/:id', async (req, res) => {
+    try {
+        const {id} = req.params
+        res.status(200).json({message:`Specefic book is deleted with id :${id}`})
+    }catch(error){
+        res.json({error:error.message})
+    }
+})
+
+//update book
+app.put('/books/:id', async (req, res) => {
+    try {
+        const {id} = req.params
+        const {name,description} = req.body
+        res.status(201 ).json({message:`book  was updated.And new name :${name} , description : ${description}`})
+    }catch(error){
+        res.json({error:error.message})
+    }
+})
 
 
-   
-    writeFortunes(fortunes)
-    res.json(fortunes)
-})
-app.delete('/fortunes/:id', (req, res) => {
-    const { id } = req.params
-    const newFortunes = fortunes.filter(f => f.id != id)
-    writeFortunes(newFortunes)
-    res.json(newFortunes)
-})
+
+
+
 
 
 
